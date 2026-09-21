@@ -300,4 +300,10 @@ head(BANCO_AULA14_RJ)
 
 # Tarefa 5: Exportar o banco de dados BANCO_AULA14_RJ com o nome BANCO_AULA14_RJ.csv
 
+write.csv(
+  BANCO_AULA14_RJ,
+  "BANCO_AULA14_RJ.csv",
+  row.names = FALSE
+)
+
 # Ao terminar a Tarefa 5 commit com a mensagem "dados e script - Etapa 2" e envie para o repositório Aula_14_Extra
