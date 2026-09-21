@@ -4,6 +4,15 @@
 # Tarefa 1: Leitura do banco de dados banco 2 = SINASC.csv com o nome de dados_aula14
 # Ler o arquivo, verificar estrutura dos dados e dar uma olhada nos dados
 
+dados_aula14 <- read.csv("banco 2 = SINASC.csv",
+                         sep = ";",
+                         header = TRUE,
+                         stringsAsFactors = FALSE)
+
+str(dados_aula14)
+head(dados_aula14)
+names(dados_aula14)
+
 # Ao terminar a Tarefa 1 commit com a mensagem " script - tarefa 1" e envie para o repositório Aula_14_Extra
 
 
