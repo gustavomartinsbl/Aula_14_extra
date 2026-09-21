@@ -55,6 +55,42 @@ dados_aula14$F_IDADE <- ifelse(
 # criar a variável PAM (somente quando TIPO_VEICULO = "Carro"), de acordo com IDADE_PROPRIETARIO e SEXO_PROPRIETARIO, com as seguintes categorias:
 # PAM = "PIC", se VALOR_VEICULO < VALOR_P10; "AIC", se VALOR_P10 <= VALOR_VEICULO <= VALOR_P90; "GIC", se VALOR_VEICULO > VALOR_P90
 
+# Leitura da Tabela_PAM
+tabela_pam <- read.csv("Tabela_PAM ..csv",
+                       sep = ";",
+                       header = TRUE,
+                       stringsAsFactors = FALSE)
+
+# Agregar VALOR_P10 e VALOR_P90 ao banco principal
+dados_aula14 <- merge(
+  dados_aula14,
+  tabela_pam,
+  by = c("IDADE_PROPRIETARIO", "SEXO_PROPRIETARIO"),
+  all.x = TRUE
+)
+
+# Criar PAM somente para Carro
+dados_aula14$PAM <- NA
+
+dados_aula14$PAM[
+  dados_aula14$TIPO_VEICULO == "Carro" &
+    dados_aula14$VALOR_VEICULO < dados_aula14$VALOR_P10
+] <- "PIC"
+
+dados_aula14$PAM[
+  dados_aula14$TIPO_VEICULO == "Carro" &
+    dados_aula14$VALOR_VEICULO >= dados_aula14$VALOR_P10 &
+    dados_aula14$VALOR_VEICULO <= dados_aula14$VALOR_P90
+] <- "AIC"
+
+dados_aula14$PAM[
+  dados_aula14$TIPO_VEICULO == "Carro" &
+    dados_aula14$VALOR_VEICULO > dados_aula14$VALOR_P90
+] <- "GIC"
+
+# Conferir
+table(dados_aula14$PAM, useNA = "ifany")
+
 # Ao terminar a Tarefa 3 commit com a mensagem " script - tarefa 1 a 3" e envie para o repositório Aula_14_Extra
 
  
