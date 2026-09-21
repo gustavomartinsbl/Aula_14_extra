@@ -125,6 +125,176 @@ table(dados_aula14$PAM, useNA = "ifany")
 # TAIC: total de compradores com perfil AIC
 # TGIC: total de compradores com perfil GIC
 
+
+media <- function(x) {
+  if (all(is.na(x))) {
+    return(NA)
+  }
+  mean(x, na.rm = TRUE)
+}
+
+
+desvio <- function(x) {
+  if (sum(!is.na(x)) <= 1) {
+    return(NA)
+  }
+  sd(x, na.rm = TRUE)
+}
+
+
+percentil <- function(x, p) {
+  if (all(is.na(x))) {
+    return(NA)
+  }
+  as.numeric(quantile(x, probs = p, na.rm = TRUE))
+}
+
+
+
+gera_resumo <- function(dados, nivel, codigo) {
+  
+
+  mulheres_carro <- dados[
+    dados$SEXO_PROPRIETARIO == "Feminino" &
+      dados$TIPO_VEICULO == "Carro",
+  ]
+
+  homens_moto <- dados[
+    dados$SEXO_PROPRIETARIO == "Masculino" &
+      dados$TIPO_VEICULO == "Moto",
+  ]
+  
+  data.frame(
+    ANO = 2025,
+    NIVEL = nivel,
+    CODIGO = codigo,
+    
+    TVV = nrow(dados),
+    
+    TVRC = sum(complete.cases(
+      dados[, c("MUNICIPIO",
+                "SEXO_PROPRIETARIO",
+                "IDADE_PROPRIETARIO",
+                "TIPO_VEICULO",
+                "VALOR_VEICULO")]
+    )),
+    
+    TVVF = sum(dados$SEXO_PROPRIETARIO == "Feminino", na.rm = TRUE),
+    
+    TVVM = sum(dados$SEXO_PROPRIETARIO == "Masculino", na.rm = TRUE),
+    
+    TVCF = sum(
+      dados$SEXO_PROPRIETARIO == "Feminino" &
+        dados$TIPO_VEICULO == "Carro",
+      na.rm = TRUE
+    ),
+    
+    TVCM = sum(
+      dados$SEXO_PROPRIETARIO == "Masculino" &
+        dados$TIPO_VEICULO == "Carro",
+      na.rm = TRUE
+    ),
+    
+    TVMF = sum(
+      dados$SEXO_PROPRIETARIO == "Feminino" &
+        dados$TIPO_VEICULO == "Moto",
+      na.rm = TRUE
+    ),
+    
+    TVMM = sum(
+      dados$SEXO_PROPRIETARIO == "Masculino" &
+        dados$TIPO_VEICULO == "Moto",
+      na.rm = TRUE
+    ),
+    
+    TVC_22_34 = sum(
+      dados$TIPO_VEICULO == "Carro" &
+        dados$F_IDADE == "22 a 34",
+      na.rm = TRUE
+    ),
+    
+    TVC_35_45 = sum(
+      dados$TIPO_VEICULO == "Carro" &
+        dados$F_IDADE == "35 a 45",
+      na.rm = TRUE
+    ),
+    
+    IMVCF = media(mulheres_carro$IDADE_PROPRIETARIO),
+    
+    DPVCF = desvio(mulheres_carro$IDADE_PROPRIETARIO),
+    
+    IVCF_P25 = percentil(
+      mulheres_carro$IDADE_PROPRIETARIO, 0.25
+    ),
+    
+    IVCF_P50 = percentil(
+      mulheres_carro$IDADE_PROPRIETARIO, 0.50
+    ),
+    
+    IVCF_P75 = percentil(
+      mulheres_carro$IDADE_PROPRIETARIO, 0.75
+    ),
+    
+    IMVMM = media(homens_moto$IDADE_PROPRIETARIO),
+    
+    DPVMM = desvio(homens_moto$IDADE_PROPRIETARIO),
+    
+    IVMM_P25 = percentil(
+      homens_moto$IDADE_PROPRIETARIO, 0.25
+    ),
+    
+    IVMM_P50 = percentil(
+      homens_moto$IDADE_PROPRIETARIO, 0.50
+    ),
+    
+    IVMM_P75 = percentil(
+      homens_moto$IDADE_PROPRIETARIO, 0.75
+    ),
+    
+    TPIC = sum(dados$PAM == "PIC", na.rm = TRUE),
+    
+    TAIC = sum(dados$PAM == "AIC", na.rm = TRUE),
+    
+    TGIC = sum(dados$PAM == "GIC", na.rm = TRUE)
+  )
+}
+
+
+linha_uf <- gera_resumo(
+  dados_aula14,
+  "UF",
+  33
+)
+
+
+municipios <- sort(unique(dados_aula14$MUNICIPIO))
+
+linhas_municipios <- do.call(
+  rbind,
+  lapply(municipios, function(m) {
+    
+    dados_municipio <- dados_aula14[
+      dados_aula14$MUNICIPIO == m,
+    ]
+    
+    gera_resumo(
+      dados_municipio,
+      "MUNICIPIO",
+      m
+    )
+  })
+)
+
+
+BANCO_AULA14_RJ <- rbind(
+  linha_uf,
+  linhas_municipios
+)
+
+
+str(BANCO_AULA14_RJ)
+head(BANCO_AULA14_RJ)
+
 # Ao terminar a Tarefa 4 commit com a mensagem " script - tarefa 1 a 4" e envie para o repositório Aula_14_Extra
 
 
