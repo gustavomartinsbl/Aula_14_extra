@@ -21,6 +21,32 @@ names(dados_aula14)
 # Atribuir legendas para a variável TIPO_VEICULO, sendo 1: Carro e 2: Moto
 # Criar uma nova variável em dados_aula14 F_IDADE categorizando as idades em: 22 a 34, 35 a 45
 
+dados_aula14$SEXO_PROPRIETARIO <- ifelse(
+  tolower(dados_aula14$SEXO_PROPRIETARIO) == "feminino",
+  "Feminino",
+  "Masculino"
+)
+
+# Atribuir legendas para TIPO_VEICULO
+dados_aula14$TIPO_VEICULO <- factor(
+  dados_aula14$TIPO_VEICULO,
+  levels = c(1, 2),
+  labels = c("Carro", "Moto")
+)
+
+# Criar F_IDADE
+dados_aula14$F_IDADE <- ifelse(
+  dados_aula14$IDADE_PROPRIETARIO >= 22 &
+    dados_aula14$IDADE_PROPRIETARIO <= 34,
+  "22 a 34",
+  ifelse(
+    dados_aula14$IDADE_PROPRIETARIO >= 35 &
+      dados_aula14$IDADE_PROPRIETARIO <= 45,
+    "35 a 45",
+    NA
+  )
+)
+
 # Ao terminar a Tarefa 2 commit com a mensagem " script - tarefa 1 a 2" e envie para o repositório Aula_14_Extra
 
 
